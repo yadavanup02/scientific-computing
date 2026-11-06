@@ -1,0 +1,103 @@
+reset
+reset session
+set colorsequence podo
+set datafile sep '\t'
+set datafile columnheaders
+set xdata time
+set timefmt "%d.%m.%Y %H:%M:%S"
+set decimal locale 'de_DE.UTF-8'
+#set decimalsign locale
+
+### Paths - To be changed every time
+        ########################
+pathgas = "~/share/Felsenkeller/Notfallinformationen/Pelletron/Logs/GastargetLog/2505"
+
+### Filenames - To be changed every time
+        ########################
+LISTgas = system("ls ".pathgas."/Log_250505_*.csv")
+#LISTgas = system("ls ".pathgas."/Log_250501_*.csv ".pathgas."/Log_250502_*.csv")
+
+
+### Date and time - To be changed every time
+        ########################
+start = strptime("%d.%m.%Y %H:%M:%S", "05.05.2025 20:10:00")
+stop  = strptime("%d.%m.%Y %H:%M:%S", "05.05.2025 23:40:00")
+Run_number = 4579
+zero_power  = 94.681
+beam_energy = 282.65 # MeV
+energy_loss = 12.0  # MeV
+
+### Temporary data files
+temp = "temp.txt"
+capo = "calorimeter_power.txt"
+tacu = "target_current.txt"
+
+### Create output directory for the run
+output_dir = sprintf("Calorimeter_Power/Run%d", Run_number)
+system(sprintf("mkdir -p %s", output_dir))
+
+### Update combined file path to save in the run directory
+#calorimeter_file = sprintf("%s/%s", output_dir, capo)
+
+### Read power from logfile and write into a single file with time, power, and current
+set table temp
+    plot for [data in LISTgas] data u (a=timecolumn(1)):(sprintf("%.1f",a)):(sprintf("%.3f",column(48))):((zero_power - column(48))*1000 / (beam_energy - energy_loss)) with table
+unset table
+
+set print capo
+	print "time	heater power [W]"
+unset print
+set xdata
+set table capo
+	plot temp u (sprintf("%.1f",$2)):(sprintf("%.7f",$3)) with table if ($2>start&&$2<stop)
+unset table
+
+set print tacu
+    print "time	current [uA]"
+unset print
+set xdata
+set table tacu
+    plot temp u (sprintf("%.1f",$2)):(sprintf("%.7f",$4)) with table if ($2>start&&$2<stop)
+unset table
+
+### Get averages from the temporary files
+set xdata
+stats tacu u 1:2 nooutput
+tacu_ave = STATS_mean_y
+stats capo u 1:2 nooutput
+capo_ave = STATS_mean_y
+### Calculate duration in seconds
+duration_seconds = stop - start
+
+### Save plots: Power and Beam Current
+set xdata time
+set xlabel "Time [h:m]"
+set timefmt "%s"
+set format x '%H:%M'
+#set title sprintf("Run %d: Power and Beam Current (Duration: %d seconds)", Run_number, duration_seconds)
+#set key outside center top
+set terminal svg size 800,600
+set output sprintf("%s/Power_and_Current_Run%d.svg", output_dir, Run_number)
+#set output sprintf("%s/%s", output_dir, capo)
+
+set multiplot layout 2,1 
+
+# Plot calorimeter power
+set ylabel "Calorimeter power [W]"
+set yrange [capo_ave - 10 : capo_ave + 10]
+plot capo u 1:2 t "Calorimeter power [W]" pt 6,\
+    capo_ave t "Average calorimeter power = ".gprintf("%.3f",capo_ave)." W"
+
+# Plot beam current
+set ylabel "Beam current [uA]"
+set yrange [tacu_ave - 10 : tacu_ave + 10]
+plot tacu u 1:2 t "Beam current [uA]" pt 6,\
+    tacu_ave t "Average beam current = ".gprintf("%.3f",tacu_ave)." uA"
+
+unset multiplot
+unset output
+print sprintf("Calorimeter power average: %.3f W", capo_ave)
+print
+# Display the plot on screen
+set terminal qt
+replot

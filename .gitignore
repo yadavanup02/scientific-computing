@@ -1,0 +1,35 @@
+# Experimental input and detector-acquisition data
+data/
+raw_data/
+private_data/
+*.root
+*.bin
+*.dat
+
+# Locally derived yields, fit inputs, and run-specific text files
+*.txt
+*.csv
+*.tsv
+
+# Generated analysis products
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.eps
+
+# ROOT and compiler build products
+*.pcm
+*_ACLiC_dict_rdict.pcm
+*.so
+*.dylib
+*.dll
+*.d
+*.o
+
+# Editor and operating-system files
+.DS_Store
+.idea/
+.vscode/
+*~
