@@ -28,6 +28,30 @@ private_data/
 *.d
 *.o
 
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# RatesMC builds and generated Monte Carlo outputs
+third_party/ratesmc/build/
+third_party/ratesmc/RatesMC
+third_party/ratesmc/RatesMC.log
+third_party/ratesmc/RatesMC.out
+third_party/ratesmc/RatesMC.full
+third_party/ratesmc/RatesMC.cont
+third_party/ratesmc/RatesMC.integ
+third_party/ratesmc/RatesMC.latex
+third_party/ratesmc/RatesMC.samp
+third_party/ratesmc/RatesMC.sfact
+third_party/ratesmc/RatesMC.PT
+third_party/ratesmc/ParameterSamples.dat
+third_party/ratesmc/RatesMC*.in
+!third_party/ratesmc/RatesMC_template.in
+third_party/ratesmc/mass_*.mas20
+third_party/ratesmc/nubase_*.mas20
+
 # Editor and operating-system files
 .DS_Store
 .idea/

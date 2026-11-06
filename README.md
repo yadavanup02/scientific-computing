@@ -17,6 +17,9 @@ root/nuclear_astrophysics/n14ag/
   legacy/                 Historical scripts retained for traceability
 tools/gnuplot/calorimeter/
                            Calorimeter-current, pressure, flow, and averaging scripts
+python/nuclear_astrophysics/n14ag/tnrr/
+                           Thermonuclear reaction-rate analysis and plotting scripts
+third_party/ratesmc/        RatesMC source and its upstream GPL-3.0 license
 documentation/            Project overview and data-publication policy
 ```
 
@@ -24,6 +27,8 @@ documentation/            Project overview and data-publication policy
 
 - [ROOT](https://root.cern/) with C++ macro support
 - Gnuplot for scripts in `tools/gnuplot/calorimeter/`
+- Python 3 with NumPy, pandas, Matplotlib, and SciPy for `python/.../tnrr/`
+- CMake, a C++14 compiler, and GSL for `third_party/ratesmc/`
 
 The imported scripts use ROOT classes such as `TCanvas`, `TGraphErrors`, and `TF1`.
 
@@ -52,3 +57,4 @@ Replace `start_run` and `end_run` with valid run numbers, and adapt the input/ou
 - The `plot_n14pg_*` names are historical filenames. Their code refers to the `^{14}N(\alpha,\gamma)^{18}F` scan workflow and is organized under `n14ag`.
 
 See [data policy](documentation/DATA_POLICY.md) before adding any datasets or results.
+For the thermonuclear reaction-rate code, see [TNRR notes](documentation/TNRR.md).
